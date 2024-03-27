@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, render_template, jsonify
 from requests import get, post
+import json
 
 app = Flask(__name__, static_folder='public', template_folder='views')
 
@@ -13,7 +14,9 @@ def homepage():
   
 @app.route('/postFeedback', methods=['POST'])
 def postFeedback():
-    req = get('https://api.telegram.org/bot' + token + '/sendMessage?chat_id=468110974&parse_mode=Markdown&text=' + request.data)
+    data = json.loads(request.data)
+    message = "Отзыв от:".decode('utf-8') + data["name"] + "g"
+    req = get('https://api.telegram.org/bot' + token + '/sendMessage?chat_id=468110974&parse_mode=Markdown&text=' + message)
     return req.content, req.status_code
     
 
