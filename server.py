@@ -4,7 +4,7 @@ from requests import get, post
 
 app = Flask(__name__, static_folder='public', template_folder='views')
 
-app.secret = os.environ.get('SECRET')
+token = os.environ.get('TOKEN')
 
 @app.route('/')
 def homepage():
@@ -13,7 +13,7 @@ def homepage():
   
 @app.route('/postFeedback', methods=['POST'])
 def postFeedback():
-    req = get('https://api.telegram.org/bot7114465780:AAECltozhDbmqfebfryry2A4z0dL5xOF5y8/sendMessage?chat_id=468110974&parse_mode=Markdown&text=a',data=request.data)
+    req = get('https://api.telegram.org/bot' + token + '/sendMessage?chat_id=468110974&parse_mode=Markdown&text=' + request.data)
     return req.content, req.status_code
     
 
