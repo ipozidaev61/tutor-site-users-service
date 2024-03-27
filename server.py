@@ -15,7 +15,7 @@ def homepage():
 @app.route('/postFeedback', methods=['POST'])
 def postFeedback():
     data = json.loads(request.data)
-    message = "Отзыв от:".decode('utf-8') + data["name"] + "g"
+    message = "Feedback from: " + data["name"] + "\n\n" + data["feedback"]
     req = get('https://api.telegram.org/bot' + token + '/sendMessage?chat_id=468110974&parse_mode=Markdown&text=' + message)
     return req.content, req.status_code
     
