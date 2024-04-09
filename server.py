@@ -13,7 +13,7 @@ token = os.environ.get('TOKEN')
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
+            "user_data.sql",
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
@@ -32,7 +32,21 @@ def init_db():
 
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
+        
+def init_app(app):
+    app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)
+    
+def create_app():
+  init_app(app)
+  return app
 
+@app.route('/admin/initDB')
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    init_db()
+    return "ok"
+        
 @app.route('/')
 def homepage():
     """Displays the homepage."""
