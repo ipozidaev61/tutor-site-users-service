@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, jsonify
 from requests import get, post
 import json
 from flask import Flask, render_template, request, url_for, redirect
-from flask-sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy.sql import func
 
@@ -26,7 +26,7 @@ class Student(db.Model):
                            server_default=func.now())
 
     def __repr__(self):
-        return f'<Student {self.firstname}>'
+        return '<Student {self.firstname}>'
 
 token = os.environ.get('TOKEN')
 
