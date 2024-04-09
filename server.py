@@ -39,7 +39,7 @@ def create_db():
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           firstname TEXT NOT NULL,
           lastname TEXT NOT NULL,
-          email TEXT NOT NULL,
+          email TEXT UNIQUE NOT NULL,
           password TEXT NOT NULL
           );
           ''')
