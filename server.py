@@ -29,7 +29,7 @@ def get_db():
           ''')
     df = pd.DataFrame(c.fetchall(), columns=['id','username','password'])
     conn.commit()
-    return df.to_string()
+    return df.to_string(index=False).replace('\n', '<br>')
 
 @app.route('/v1/admin/createDB')
 def create_db():
