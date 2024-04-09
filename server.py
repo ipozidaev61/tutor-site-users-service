@@ -49,6 +49,19 @@ def postFeedback():
     message = "Feedback from: " + data["name"] + "\n\n" + "E-mail: " + data["email"] + "\n\n" + data["feedback"]
     req = get('https://api.telegram.org/bot' + token + '/sendMessage?chat_id=468110974&parse_mode=Markdown&text=' + message)
     return req.content, req.status_code
+  
+@app.route('/v1/addUser', methods=['POST'])
+def addUser():
+    #data = json.loads(request.data)
+    conn = sqlite3.connect('test_database') 
+    c = conn.cursor()
+    c.execute('''
+          INSERT INTO user (username, password)
+                VALUES
+                ('user','Computer')
+          ''')
+    conn.commit()
+    return "ok"
     
 
 if __name__ == '__main__':
