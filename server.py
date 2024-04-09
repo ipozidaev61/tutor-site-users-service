@@ -4,6 +4,7 @@ from requests import get, post
 import json
 import sqlite3
 import pandas as pd
+from werkzeug.security import generate_password_hash
 
 #conn = sqlite3.connect('test_database') 
                      
@@ -62,10 +63,11 @@ def addUser():
     #data = json.loads(request.data)
     conn = sqlite3.connect('test_database') 
     c = conn.cursor()
+    pwd = generate_password_hash("aaaaaaa", "sha256")
     c.execute('''
           INSERT INTO user (username, password)
                 VALUES
-                ('user2','Computer')
+                ('user4',"''' + pwd + '''")
           ''')
     conn.commit()
     return "ok"
