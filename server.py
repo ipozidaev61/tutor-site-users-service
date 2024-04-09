@@ -6,10 +6,6 @@ import sqlite3
 import pandas as pd
 from werkzeug.security import generate_password_hash
 
-#conn = sqlite3.connect('test_database') 
-                     
-#conn.commit()
-
 app = Flask(__name__, static_folder='public', template_folder='views')
 
 token = os.environ.get('TOKEN')
@@ -24,11 +20,13 @@ def get_db():
     c.execute('''
           SELECT
           a.id,
-          a.username,
+          a.firstname,
+          a.lastname,
+          a.email,
           a.password
-          FROM user a
+          FROM users a
           ''')
-    df = pd.DataFrame(c.fetchall(), columns=['id','username','password'])
+    df = pd.DataFrame(c.fetchall(), columns=['id','firstname','lastname','email','password'])
     conn.commit()
     return df.to_string(index=False).replace('\n', '<br>')
 
@@ -37,9 +35,11 @@ def create_db():
     conn = sqlite3.connect('test_database') 
     c = conn.cursor()
     c.execute('''
-          CREATE TABLE user (
+          CREATE TABLE users (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          username TEXT UNIQUE NOT NULL,
+          firstname TEXT NOT NULL,
+          lastname TEXT NOT NULL,
+          email TEXT NOT NULL,
           password TEXT NOT NULL
           );
           ''')
@@ -60,14 +60,15 @@ def postFeedback():
   
 @app.route('/v1/addUser', methods=['POST'])
 def addUser():
-    #data = json.loads(request.data)
+    data = json.loads(request.data)
     conn = sqlite3.connect('test_database') 
     c = conn.cursor()
-    pwd = generate_password_hash("aaaaaaa", "sha256")
+    pwd = generate_password_hash(data['password'], "sha256")
     c.execute('''
-          INSERT INTO user (username, password)
+          INSERT INTO users (firstname, lastname, email, password)
                 VALUES
-                ('user4',"''' + pwd + '''")
+                ("''' + data['name'] + '''","''' + data['lastname'] + '''"
+                ,"''' + data['email'] + '''","''' + pwd + '''")
           ''')
     conn.commit()
     return "ok"
