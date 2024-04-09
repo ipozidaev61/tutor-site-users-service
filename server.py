@@ -20,9 +20,16 @@ def get_db():
       abort(401)
     conn = sqlite3.connect('test_database') 
     c = conn.cursor()
+    c.execute('''
+          SELECT
+          a.id,
+          a.username,
+          a.password
+          FROM user a
+          ''')
     df = pd.DataFrame(c.fetchall(), columns=['id','username','password'])
     conn.commit()
-    return str(df)
+    return df.to_string()
 
 @app.route('/v1/admin/createDB')
 def create_db():
@@ -58,7 +65,7 @@ def addUser():
     c.execute('''
           INSERT INTO user (username, password)
                 VALUES
-                ('user','Computer')
+                ('user2','Computer')
           ''')
     conn.commit()
     return "ok"
