@@ -2,42 +2,37 @@ import os
 from flask import Flask, request, render_template, jsonify
 from requests import get, post
 import json
-from flask import Flask, render_template, request, url_for, redirect
-from flask_sqlalchemy import SQLAlchemy
+import sqlite3
+import pandas as pd
 
-from sqlalchemy.sql import func
-
-basedir = os.path.abspath(os.path.dirname(__file__))
+#conn = sqlite3.connect('test_database') 
+                     
+#conn.commit()
 
 app = Flask(__name__, static_folder='public', template_folder='views')
-app.config['SQLALCHEMY_DATABASE_URI'] =\
-        'sqlite:///' + os.path.join(basedir, 'database.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-class Student(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(100), nullable=False)
-    lastname = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(80), unique=True, nullable=False)
-    age = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime(timezone=True),
-                           server_default=func.now())
-
-    def __repr__(self):
-        return '<Student {self.firstname}>'
 
 token = os.environ.get('TOKEN')
 
 @app.route('/admin/getDB')
-def get_db_command():
-    return get_db()
+def get_db():
+    conn = sqlite3.connect('test_database') 
+    c = conn.cursor()
+    df = pd.DataFrame(c.fetchall(), columns=['id','username','password'])
+    conn.commit()
+    return string(df)
 
-@app.route('/admin/initDB')
-def init_db_command():
-    """Clear the existing data and create new tables."""
-    init_db()
+@app.route('/admin/createDB')
+def create_db():
+    conn = sqlite3.connect('test_database') 
+    c = conn.cursor()
+    c.execute('''
+          CREATE TABLE user (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT UNIQUE NOT NULL,
+          password TEXT NOT NULL
+          );
+          ''')
+    conn.commit()
     return "ok"
         
 @app.route('/')
