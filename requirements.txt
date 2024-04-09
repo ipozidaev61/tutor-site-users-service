@@ -1,5 +1,3 @@
 Flask
 requests
 json
-sqlite3
-click
