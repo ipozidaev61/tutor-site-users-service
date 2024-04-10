@@ -63,7 +63,7 @@ def deleteRecord():
     try:
         sqliteConnection = sqlite3.connect('test_database')
         cursor = sqliteConnection.cursor()
-        sql_delete_query = '''DELETE from SqliteDb_developers where id = "''' + request.args['id'] 
+        sql_delete_query = '''DELETE from users where id = "''' + request.args['id'] + '''"'''
         cursor.execute(sql_delete_query)
         sqliteConnection.commit()
         print("Record deleted successfully ")
