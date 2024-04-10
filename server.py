@@ -127,7 +127,6 @@ def authorize():
     firstname = user_data[0][0]
     lastname = user_data[0][1]
     encoded_jwt = jwt.encode({'firstname': firstname, 'lastname': lastname}, auth_secret, algorithm='HS256')
-    print(encoded_jwt)
     conn.commit()
     return encoded_jwt
 
