@@ -26,7 +26,7 @@ auth_secret = os.environ.get('AUTH_SECRET')
 def get_social_db():
     if request.args['secret']!=adm_pass:
       abort(401)
-    conn = sqlite3.connect('test_database') 
+    conn = sqlite3.connect('database_social') 
     c = conn.cursor()
     c.execute('''
           SELECT
@@ -43,12 +43,12 @@ def get_social_db():
 def get_db():
     if request.args['secret']!=adm_pass:
       abort(401)
-    conn = sqlite3.connect('database_social') 
+    conn = sqlite3.connect('test_database') 
     c = conn.cursor()
     c.execute('''
           SELECT
           id,
-          fullname,
+          firstname,
           lastname,
           email,
           password
@@ -171,6 +171,15 @@ def getUser():
   
 @app.route('/v1/social/saveComment', methods=['POST'])
 def saveComment():
+    data = json.loads(request.data)
+    conn = sqlite3.connect('database_social') 
+    c = conn.cursor()
+    c.execute('''
+          INSERT INTO comments (name, text)
+                VALUES
+                ("''' + data['name'] + '''","''' + data['text'] + '''")
+          ''')
+    conn.commit()
     return "ok"
     
 
