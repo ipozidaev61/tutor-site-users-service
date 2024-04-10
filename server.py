@@ -108,7 +108,12 @@ def authorize():
     data = json.loads(request.data)
     conn = sqlite3.connect('test_database') 
     c = conn.cursor()
-    
+    c.execute('''
+          SELECT password FROM users WHERE email = "''' + data['email'] + '''"
+          ''')
+    pwd_hash = c.fetchall()[0][0]
+    print(pwd_hash)
+    print(check_password_hash(pwd_hash, data['password']))
     conn.commit()
     return "ok"
 
