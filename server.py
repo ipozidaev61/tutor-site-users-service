@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, jsonify, abort
+from flask import Flask, request, render_template, jsonify, abort, make_response
 from requests import get, post
 import json
 import sqlite3
@@ -96,13 +96,16 @@ def addUser():
     conn = sqlite3.connect('test_database') 
     c = conn.cursor()
     pwd = generate_password_hash(data['password'], "sha256")
-    c.execute('''
+    try:
+      c.execute('''
           INSERT INTO users (firstname, lastname, email, password)
                 VALUES
                 ("''' + data['name'] + '''","''' + data['lastname'] + '''"
                 ,"''' + data['email'] + '''","''' + pwd + '''")
           ''')
-    conn.commit()
+      conn.commit()
+    except:
+      abort(403)
     return "ok"
   
 @app.route('/v1/users/authorize', methods=['POST'])
@@ -126,7 +129,7 @@ def authorize():
     encoded_jwt = jwt.encode({'firstname': firstname, 'lastname': lastname}, auth_secret, algorithm='HS256')
     print(encoded_jwt)
     conn.commit()
-    return "ok"
+    return encoded_jwt
 
 if __name__ == '__main__':
     app.run()
