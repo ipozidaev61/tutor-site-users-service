@@ -113,7 +113,10 @@ def authorize():
           ''')
     pwd_hash = c.fetchall()[0][0]
     print(pwd_hash)
-    print(check_password_hash(pwd_hash, data['password']))
+    isTrue = check_password_hash(pwd_hash, data['password'])
+    if not isTrue:
+      abort(401)
+    
     conn.commit()
     return "ok"
 
