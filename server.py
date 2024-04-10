@@ -114,16 +114,15 @@ def authorize():
           SELECT password FROM users WHERE email = "''' + data['email'] + '''"
           ''')
     pwd_hash = c.fetchall()[0][0]
-    print(pwd_hash)
     isTrue = check_password_hash(pwd_hash, data['password'])
     if not isTrue:
       abort(401)
     c.execute('''
           SELECT firstname, lastname FROM users WHERE email = "''' + data['email'] + '''"
           ''')
-    print(c.fetchall())
-    firstname = c.fetchall()[0][0]
-    lastname = c.fetchall()[0][1]
+    user_data = c.fetchall()
+    firstname = user_data[0][0]
+    lastname = user_data[0][1]
     encoded_jwt = jwt.encode({'firstname': firstname, 'lastname': lastname}, auth_secret, algorithm='HS256')
     print(encoded_jwt)
     conn.commit()
