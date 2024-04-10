@@ -27,12 +27,12 @@ def get_db():
     c = conn.cursor()
     c.execute('''
           SELECT
-          a.id,
-          a.firstname,
-          a.lastname,
-          a.email,
-          a.password
-          FROM users a
+          id,
+          firstname,
+          lastname,
+          email,
+          password
+          FROM users
           ''')
     df = pd.DataFrame(c.fetchall(), columns=['id','firstname','lastname','email','password'])
     conn.commit()
@@ -105,7 +105,11 @@ def addUser():
   
 @app.route('/v1/users/authorize', methods=['POST'])
 def authorize():
-  
+    data = json.loads(request.data)
+    conn = sqlite3.connect('test_database') 
+    c = conn.cursor()
+    
+    conn.commit()
     return "ok"
 
 if __name__ == '__main__':
