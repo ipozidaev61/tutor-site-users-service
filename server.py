@@ -189,14 +189,12 @@ def getComments():
     c.execute('''
           SELECT * FROM comments ORDER BY id DESC LIMIT 20;
           ''')
-    dict = [{}]*20
+    dict = {}
     data = c.fetchall()
     i = 0
     for entity in data:
-      dict[i]["name"] = entity[1]
-      dict[i]["text"] = entity[2]
+      dict[i] = {"name":entity[1],"text":entity[2]}
       i += 1
-    #rint(jsonify(c.fetchall()))
     return jsonify(dict)
     
 
