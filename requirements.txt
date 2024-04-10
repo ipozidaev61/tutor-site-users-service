@@ -2,4 +2,5 @@ Flask
 requests
 pandas
 werkzeug
-flask.ext.cors
+flask-cors
+collections.abc
