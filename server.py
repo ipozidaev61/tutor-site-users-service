@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, render_template, jsonify, abort
+from flask.ext.cors import CORS, cross_origin
 from requests import get, post
 import json
 import sqlite3
@@ -7,6 +8,8 @@ import pandas as pd
 from werkzeug.security import generate_password_hash
 
 app = Flask(__name__, static_folder='public', template_folder='views')
+cors = CORS(app, resources={r"/foo": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 token = os.environ.get('TOKEN')
 adm_pass = os.environ.get('ADMIN_SECRET')
@@ -59,6 +62,7 @@ def postFeedback():
     return req.content, req.status_code
   
 @app.route('/v1/addUser', methods=['POST'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def addUser():
     data = json.loads(request.data)
     conn = sqlite3.connect('test_database') 
