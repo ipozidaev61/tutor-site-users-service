@@ -129,6 +129,11 @@ def authorize():
     encoded_jwt = jwt.encode({'firstname': firstname, 'lastname': lastname}, auth_secret, algorithm='HS256')
     conn.commit()
     return encoded_jwt
+  
+@app.route('/v1/users/getUser', methods=['GET'])
+def getUser():
+    auth = request.headers.get('Authorization')
+    return jsonify(jwt.decode(auth, auth_secret, algorithms=["HS256"]))
 
 if __name__ == '__main__':
     app.run()
