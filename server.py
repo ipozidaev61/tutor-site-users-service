@@ -8,6 +8,14 @@ from werkzeug.security import generate_password_hash
 
 app = Flask(__name__, static_folder='public', template_folder='views')
 
+@app.after_request 
+def after_request(response):
+    header = response.headers
+    header['Access-Control-Allow-Origin'] = '*'
+    # Other headers can be added here if needed
+    return response
+  
+
 token = os.environ.get('TOKEN')
 adm_pass = os.environ.get('ADMIN_SECRET')
 
