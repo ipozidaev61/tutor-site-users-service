@@ -13,6 +13,7 @@ app = Flask(__name__, static_folder='public', template_folder='views')
 def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
+    header['Access-Control-Allow-Headers'] = '*'
     # Other headers can be added here if needed
     return response
   
