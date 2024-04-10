@@ -22,8 +22,8 @@ token = os.environ.get('TOKEN')
 adm_pass = os.environ.get('ADMIN_SECRET')
 auth_secret = os.environ.get('AUTH_SECRET')
 
-@app.route('/v1/admin/getDB')
-def get_db():
+@app.route('/v1/admin/getSocialDB')
+def get_social_db():
     if request.args['secret']!=adm_pass:
       abort(401)
     conn = sqlite3.connect('test_database') 
@@ -31,7 +31,24 @@ def get_db():
     c.execute('''
           SELECT
           id,
-          firstname,
+          name,
+          text
+          FROM comments
+          ''')
+    df = pd.DataFrame(c.fetchall(), columns=['id','name','text'])
+    conn.commit()
+    return df.to_string(index=False).replace('\n', '<br>')
+  
+@app.route('/v1/admin/getDB')
+def get_db():
+    if request.args['secret']!=adm_pass:
+      abort(401)
+    conn = sqlite3.connect('database_social') 
+    c = conn.cursor()
+    c.execute('''
+          SELECT
+          id,
+          fullname,
           lastname,
           email,
           password
@@ -54,6 +71,22 @@ def create_db():
           lastname TEXT NOT NULL,
           email TEXT UNIQUE NOT NULL,
           password TEXT NOT NULL
+          );
+          ''')
+    conn.commit()
+    return "ok"
+  
+@app.route('/v1/admin/createSocialDB')
+def create_social_db():
+    if request.args['secret']!=adm_pass:
+      abort(401)
+    conn = sqlite3.connect('database_social') 
+    c = conn.cursor()
+    c.execute('''
+          CREATE TABLE comments (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          text TEXT NOT NULL
           );
           ''')
     conn.commit()
@@ -135,6 +168,11 @@ def authorize():
 def getUser():
     auth = request.headers.get('Authorization')
     return jsonify(jwt.decode(auth, auth_secret, algorithms=["HS256"]))
+  
+@app.route('/v1/social/saveComment', methods=['POST'])
+def saveComment():
+    return "ok"
+    
 
 if __name__ == '__main__':
     app.run()
