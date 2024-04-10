@@ -3,4 +3,4 @@ requests
 pandas
 werkzeug
 flask-cors
-collections.abc
+pyjwt

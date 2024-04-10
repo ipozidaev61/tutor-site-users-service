@@ -5,6 +5,7 @@ import json
 import sqlite3
 import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
 
 app = Flask(__name__, static_folder='public', template_folder='views')
 
@@ -18,6 +19,7 @@ def after_request(response):
 
 token = os.environ.get('TOKEN')
 adm_pass = os.environ.get('ADMIN_SECRET')
+auth_secret = os.environ.get('AUTH_SECRET')
 
 @app.route('/v1/admin/getDB')
 def get_db():
@@ -116,7 +118,14 @@ def authorize():
     isTrue = check_password_hash(pwd_hash, data['password'])
     if not isTrue:
       abort(401)
-    
+    c.execute('''
+          SELECT firstname, lastname FROM users WHERE email = "''' + data['email'] + '''"
+          ''')
+    print(c.fetchall())
+    firstname = c.fetchall()[0][0]
+    lastname = c.fetchall()[0][1]
+    encoded_jwt = jwt.encode({'firstname': firstname, 'lastname': lastname}, auth_secret, algorithm='HS256')
+    print(encoded_jwt)
     conn.commit()
     return "ok"
 
